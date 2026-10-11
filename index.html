@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Labs · Objetos impressos em 3D</title>
+<meta name="description" content="Decoração, organizadores e peças de mesa impressas em 3D. Pague com Pix, cartão ou boleto pelo Mercado Pago.">
+<link rel="icon" href="icone.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gelo:#EEF1F3; --papel:#FAFBFB; --grafite:#262B31; --laranja:#FF5A1F; --laranja-escuro:#D9430C;
+  --ciano:#12A8BC; --linha:#CBD2D8; --suave:#59626B; --raio:6px;
+  --display:'Bricolage Grotesque','Arial Narrow',system-ui,sans-serif;
+  --corpo:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;font-family:var(--corpo);font-size:17px;line-height:1.55;color:var(--grafite);background:var(--papel)}
+img,svg{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--display);line-height:1.08;letter-spacing:-.02em;margin:0}
+p{margin:0}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--laranja);outline-offset:3px}
+.container{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border:2px solid var(--grafite);border-radius:var(--raio);background:transparent;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,color .15s}
+.btn:hover{background:var(--grafite);color:#fff}
+.btn.primario{background:var(--laranja);border-color:var(--laranja);color:var(--grafite)}
+.btn.primario:hover{background:var(--grafite);border-color:var(--grafite);color:#fff}
+.btn[disabled]{opacity:.6;cursor:wait}
+
+/* Aviso de retorno do pagamento */
+.aviso{padding:14px 0;background:var(--grafite);color:#fff;font-weight:500}
+.aviso .container{display:flex;gap:16px;align-items:center;justify-content:space-between}
+.aviso button{background:none;border:0;color:#fff;text-decoration:underline;cursor:pointer;padding:4px}
+
+/* Cabeçalho */
+.topo{position:sticky;top:0;z-index:20;background:var(--papel);border-bottom:1px solid var(--linha)}
+.topo .container{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo svg{width:36px;height:36px}
+.logo span{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.03em}
+.logo b{color:var(--laranja-escuro);font-weight:800}
+.menu{display:flex;gap:28px}
+.menu a{text-decoration:none;font-weight:500;padding:6px 0;border-bottom:2px solid transparent}
+.menu a:hover{border-bottom-color:var(--laranja)}
+.sacola-btn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border:2px solid var(--grafite);border-radius:var(--raio);background:transparent;font-weight:600;cursor:pointer}
+.sacola-btn:hover{background:var(--grafite);color:#fff}
+.sacola-btn .num{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--laranja);color:var(--grafite);font-size:14px}
+
+/* Hero: a peça "imprime" uma vez ao abrir a página */
+.hero{background-color:var(--gelo);background-image:repeating-linear-gradient(180deg,transparent 0 10px,rgba(38,43,49,.05) 10px 12px);border-bottom:1px solid var(--linha)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-top:72px;padding-bottom:72px}
+.hero h1{font-size:clamp(42px,6.2vw,80px);font-weight:800}
+.hero-texto p.lead{margin-top:24px;font-size:20px;max-width:34em}
+.acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-nota{margin-top:20px;font-size:15px;color:var(--suave)}
+.hero-arte{max-width:420px;width:100%;margin-left:auto;border-bottom:3px solid var(--grafite)}
+.impressao{position:relative;animation:imprimir 3.4s steps(34,end) .3s both}
+.impressao::after{content:"";position:absolute;left:-4%;right:-4%;height:3px;background:var(--laranja);pointer-events:none;animation:bocal 3.4s steps(34,end) .3s both}
+@keyframes imprimir{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bocal{from{top:100%;opacity:1}99%{opacity:1}to{top:0;opacity:0}}
+
+/* Seções */
+.secao{padding:96px 0}
+.secao-cab{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:24px;margin-bottom:40px}
+.secao h2{font-size:clamp(32px,4.4vw,52px);font-weight:800}
+.secao-cab p{margin-top:12px;color:var(--suave);max-width:34em}
+
+/* Filtros */
+.filtros{display:flex;flex-wrap:wrap;gap:6px 24px}
+.filtros button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 0;font-weight:600;color:var(--suave);cursor:pointer}
+.filtros button:hover{color:var(--grafite)}
+.filtros button[aria-pressed="true"]{color:var(--grafite);border-bottom-color:var(--laranja)}
+
+/* Produtos: grade com linhas finas, como uma mesa de impressão */
+.grade{display:grid;grid-template-columns:repeat(4,1fr);border-right:1px solid var(--linha);border-bottom:1px solid var(--linha)}
+.peca{display:flex;flex-direction:column;border-left:1px solid var(--linha);border-top:1px solid var(--linha);background:var(--papel)}
+.peca-arte{background:var(--gelo);padding:20px 28px 8px}
+.peca-info{display:flex;flex-direction:column;flex:1;padding:20px}
+.peca h3{font-size:21px;font-weight:700}
+.peca .desc{margin-top:8px;font-size:15px;color:var(--suave)}
+.peca .spec{margin-top:12px;font-size:14px;color:var(--suave);border-top:1px solid var(--linha);padding-top:10px}
+.peca .preco{margin-top:auto;padding-top:18px;font-family:var(--display);font-weight:700;font-size:24px}
+.peca .preco small{display:block;font-family:var(--corpo);font-weight:400;font-size:13px;color:var(--suave)}
+.peca .btn{margin-top:14px;width:100%;background:var(--grafite);color:#fff}
+.peca .btn:hover{background:var(--laranja);border-color:var(--laranja);color:var(--grafite)}
+
+.peca-arte.foto{padding:0}
+.peca-arte img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.mini img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.vazio-loja{padding:48px 0;color:var(--suave);font-size:19px}
+
+/* Como funciona */
+.escuro{background:var(--grafite);color:#fff}
+.escuro .secao-cab p{color:#B8C0C7}
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:0;list-style:none;margin:0;padding:0;border-top:1px solid #4A525A}
+.passos li{padding:32px 32px 0 0}
+.passos li + li{padding-left:32px;border-left:1px solid #4A525A}
+.passos .n{font-family:var(--display);font-weight:800;font-size:64px;line-height:1;color:var(--laranja)}
+.passos h3{margin-top:16px;font-size:24px}
+.passos p{margin-top:8px;color:#B8C0C7}
+
+/* Sob medida */
+.medida{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.medida p.lead{margin-top:16px;font-size:19px;max-width:32em}
+.medida ul{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.medida li{padding-left:22px;position:relative}
+.medida li::before{content:"";position:absolute;left:0;top:.7em;width:12px;height:3px;background:var(--laranja)}
+.medida-caixa{background:var(--gelo);border:1px solid var(--linha);padding:32px}
+.medida-caixa h3{font-size:26px}
+.medida-caixa p{margin-top:10px;color:var(--suave)}
+.medida-caixa .btn{margin-top:22px}
+
+/* Dúvidas */
+.duvidas{max-width:760px}
+.duvidas details{border-top:1px solid var(--linha)}
+.duvidas details:last-child{border-bottom:1px solid var(--linha)}
+.duvidas summary{padding:20px 40px 20px 0;font-family:var(--display);font-weight:700;font-size:21px;cursor:pointer;list-style:none;position:relative}
+.duvidas summary::-webkit-details-marker{display:none}
+.duvidas summary::after{content:"+";position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:28px;font-weight:500;color:var(--laranja-escuro)}
+.duvidas details[open] summary::after{content:"−"}
+.duvidas details p{padding:0 0 22px;color:var(--suave);max-width:40em}
+
+/* Rodapé */
+.rodape{background:var(--gelo);border-top:1px solid var(--linha);padding:48px 0}
+.rodape .container{display:flex;flex-wrap:wrap;gap:24px 48px;justify-content:space-between;align-items:center}
+.rodape p{color:var(--suave);font-size:15px}
+.rodape .links{display:flex;gap:20px}
+
+/* Sacola (gaveta lateral) */
+.veu{position:fixed;inset:0;background:rgba(38,43,49,.55);z-index:30}
+.sacola{position:fixed;top:0;right:0;bottom:0;z-index:40;width:min(460px,100%);background:var(--papel);display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .25s ease,visibility .25s}
+.sacola.aberta{transform:none;visibility:visible}
+.sacola-cab{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--linha)}
+.sacola-cab h2{font-size:26px;font-weight:800}
+.fechar{width:44px;height:44px;border:0;background:none;font-size:26px;cursor:pointer;border-radius:var(--raio)}
+.fechar:hover{background:var(--gelo)}
+.sacola-corpo{flex:1;overflow-y:auto;padding:8px 24px 32px}
+.vazia{padding:32px 0;color:var(--suave)}
+.itens{list-style:none;margin:0;padding:0}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--linha)}
+.mini{background:var(--gelo);padding:4px}
+.item strong{display:block;font-weight:600;line-height:1.3}
+.item .unit{font-size:14px;color:var(--suave)}
+.qtd{display:inline-flex;align-items:center;margin-top:8px;border:1px solid var(--linha)}
+.qtd button{width:34px;height:34px;border:0;background:none;font-size:18px;cursor:pointer}
+.qtd button:hover{background:var(--gelo)}
+.qtd output{min-width:28px;text-align:center;font-weight:600}
+.item-dir{text-align:right;font-weight:600}
+.remover{display:block;margin-top:8px;background:none;border:0;padding:4px 0;font-size:14px;font-weight:400;color:var(--suave);text-decoration:underline;cursor:pointer}
+.totais{margin:20px 0 0;display:grid;grid-template-columns:1fr auto;gap:8px 16px}
+.totais dt{color:var(--suave)}
+.totais dd{margin:0;text-align:right}
+.totais .total{font-family:var(--display);font-weight:800;font-size:24px;color:var(--grafite)}
+.form{margin-top:28px;padding-top:24px;border-top:3px solid var(--grafite)}
+.form h3{font-size:22px}
+.campos{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:16px}
+.campo{display:flex;flex-direction:column;gap:4px;grid-column:span 6}
+.campo.m3{grid-column:span 3}.campo.m2{grid-column:span 2}.campo.m4{grid-column:span 4}
+.campo label{font-size:14px;font-weight:600}
+.campo input{min-height:46px;padding:0 12px;border:1px solid #98A2AB;border-radius:var(--raio);background:#fff}
+.campo input:focus-visible{outline-offset:1px}
+.erro{margin-top:16px;padding:12px 14px;background:#FDE8E2;border-left:4px solid var(--laranja-escuro);font-size:15px}
+.form .btn{width:100%;margin-top:20px;min-height:54px;font-size:18px}
+.seguro{margin-top:12px;font-size:14px;color:var(--suave);text-align:center}
+
+@media (max-width:1000px){
+  .grade{grid-template-columns:repeat(2,1fr)}
+  .medida{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  .hero-grid{grid-template-columns:1fr;padding-top:48px;padding-bottom:48px}
+  .hero-arte{margin:0;max-width:320px}
+  .menu{display:none}
+  .passos{grid-template-columns:1fr}
+  .passos li,.passos li + li{padding:28px 0;border-left:0;border-bottom:1px solid #4A525A}
+  .secao{padding:64px 0}
+}
+@media (max-width:520px){
+  .grade{grid-template-columns:1fr}
+  .campo.m3,.campo.m2,.campo.m4{grid-column:span 6}
+  .campo.m2.meio{grid-column:span 3}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .impressao,.impressao::after{animation:none}
+  .impressao::after{display:none}
+  .sacola{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Padrões compartilhados pelas ilustrações das peças -->
+<svg aria-hidden="true" width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="camadas" width="6" height="6" patternUnits="userSpaceOnUse"><rect y="3.8" width="6" height="2.2" fill="#000" opacity=".13"/></pattern>
+    <linearGradient id="brilho" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="aviso" id="aviso" role="status" hidden>
+  <div class="container"><span id="avisoTexto"></span><button type="button" id="avisoFechar">Fechar aviso</button></div>
+</div>
+
+<header class="topo">
+  <div class="container">
+    <a class="logo" href="#" aria-label="3D Labs, início">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <defs><clipPath id="lc"><path d="M36 6 H64 V36 L90 84 Q96 94 86 94 H14 Q4 94 10 84 L36 36 Z"/></clipPath></defs>
+        <g clip-path="url(#lc)">
+          <rect y="6" width="100" height="8" fill="#262B31"/><rect y="18" width="100" height="8" fill="#262B31"/>
+          <rect y="30" width="100" height="8" fill="#262B31"/><rect y="42" width="100" height="8" fill="#262B31"/>
+          <rect y="54" width="100" height="8" fill="#FF5A1F"/><rect y="66" width="100" height="8" fill="#FF5A1F"/>
+          <rect y="78" width="100" height="8" fill="#FF5A1F"/><rect y="90" width="100" height="8" fill="#FF5A1F"/>
+        </g>
+      </svg>
+      <span><b>3D</b> Labs</span>
+    </a>
+    <nav class="menu" aria-label="Principal">
+      <a href="#produtos">Produtos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#sob-medida">Sob medida</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+    <button class="sacola-btn" id="abrirSacola" type="button" aria-controls="sacola" aria-expanded="false">
+      Sacola <span class="num" id="contador" aria-live="polite">0</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-texto">
+        <h1>Objetos impressos em 3D, feitos camada por camada.</h1>
+        <p class="lead">Decoração, organizadores e peças de mesa. Cada item é impresso depois do seu pedido e enviado para todo o Brasil.</p>
+        <div class="acoes">
+          <a class="btn primario" href="#produtos">Ver produtos</a>
+          <a class="btn" href="#sob-medida">Pedir peça sob medida</a>
+        </div>
+        <p class="hero-nota">Pix, cartão em até 12x ou boleto pelo Mercado Pago. Frete grátis acima de R$&nbsp;199.</p>
+      </div>
+      <div class="hero-arte" aria-hidden="true"><div class="impressao" id="heroArte"></div></div>
+    </div>
+  </section>
+
+  <section class="secao" id="produtos">
+    <div class="container">
+      <div class="secao-cab">
+        <div>
+          <h2>Produtos</h2>
+          <p>Toda peça mostra as linhas de camada do processo de impressão. É o jeito de reconhecer um objeto feito em 3D.</p>
+        </div>
+        <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoria"></div>
+      </div>
+      <div class="grade" id="grade"></div>
+      <p class="vazio-loja" id="vitrineMsg" role="status" hidden></p>
+    </div>
+  </section>
+
+  <section class="secao escuro" id="como-funciona">
+    <div class="container">
+      <div class="secao-cab"><div><h2>Como funciona</h2><p>Da compra até a sua porta, em três etapas.</p></div></div>
+      <ol class="passos">
+        <li><div class="n">1</div><h3>Você escolhe e paga</h3><p>Monte a sacola, informe o endereço e pague pelo Mercado Pago com Pix, cartão ou boleto.</p></li>
+        <li><div class="n">2</div><h3>Nós imprimimos</h3><p>Depois da confirmação do pagamento, a peça entra na impressora. Leva até 3 dias úteis.</p></li>
+        <li><div class="n">3</div><h3>Enviamos para você</h3><p>A peça vai embalada e você recebe o código de rastreio por e-mail.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao" id="sob-medida">
+    <div class="container medida">
+      <div>
+        <h2>Tem uma ideia? A gente imprime.</h2>
+        <p class="lead">Mande um arquivo 3D pronto ou uma foto de referência. Voltamos com orçamento e prazo.</p>
+        <ul>
+          <li>Arquivos STL e 3MF</li>
+          <li>PLA e PETG, em várias cores</li>
+          <li>Protótipos, peças de reposição e presentes personalizados</li>
+        </ul>
+      </div>
+      <div class="medida-caixa">
+        <h3>Peça um orçamento</h3>
+        <p>A conversa acontece pelo WhatsApp. Conte o tamanho, a cor e quantas unidades você quer.</p>
+        <a class="btn primario" id="linkWhats" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="duvidas" style="padding-top:0">
+    <div class="container">
+      <div class="secao-cab"><h2>Dúvidas</h2></div>
+      <div class="duvidas">
+        <details><summary>Quanto tempo leva para chegar?</summary><p>Imprimimos em até 3 dias úteis depois da confirmação do pagamento. O prazo de entrega depende dos Correios para o seu CEP e aparece no código de rastreio.</p></details>
+        <details><summary>De que material são as peças?</summary><p>PLA ou PETG, conforme a peça (veja na descrição). Evite deixar as peças em carro fechado ao sol ou em contato com água quente.</p></details>
+        <details><summary>Como posso pagar?</summary><p>Pelo Mercado Pago: Pix, cartão de crédito em até 12x, cartão de débito e boleto. Você é levado ao ambiente seguro do Mercado Pago na hora de pagar.</p></details>
+        <details><summary>Posso escolher outra cor?</summary><p>Na maioria das peças, sim. Chame no WhatsApp com o nome da peça e a cor que você quer.</p></details>
+        <details><summary>Posso trocar ou devolver?</summary><p>Você tem 7 dias depois de receber para desistir da compra. Peças feitas sob medida não entram nessa regra, porque são produzidas só para você.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="container">
+    <div>
+      <a class="logo" href="#" aria-label="3D Labs, voltar ao topo"><span><b>3D</b> Labs</span></a>
+      <p style="margin-top:8px">Pagamento seguro com Mercado Pago.</p>
+    </div>
+    <div class="links">
+      <a id="linkInsta" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a id="linkWhats2" href="#" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="admin.html">Painel do lojista</a>
+    </div>
+    <p>© <span id="ano"></span> 3D Labs</p>
+  </div>
+</footer>
+
+<!-- Sacola -->
+<div class="veu" id="veu" hidden></div>
+<aside class="sacola" id="sacola" aria-label="Sacola de compras" inert>
+  <div class="sacola-cab">
+    <h2>Sua sacola</h2>
+    <button class="fechar" id="fecharSacola" type="button" aria-label="Fechar sacola">×</button>
+  </div>
+  <div class="sacola-corpo">
+    <p class="vazia" id="vazia">Sua sacola está vazia. Escolha uma peça para começar.</p>
+    <ul class="itens" id="itens"></ul>
+    <dl class="totais" id="totais" hidden></dl>
+
+    <form class="form" id="form" hidden>
+      <h3>Entrega</h3>
+      <div class="campos">
+        <div class="campo"><label for="nome">Nome completo</label><input id="nome" name="nome" autocomplete="name" required></div>
+        <div class="campo m3"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div class="campo m3"><label for="telefone">WhatsApp com DDD</label><input id="telefone" name="telefone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="54 99999-9999" required></div>
+        <div class="campo m2 meio"><label for="cep">CEP</label><input id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" required></div>
+        <div class="campo m4"><label for="endereco">Rua</label><input id="endereco" name="endereco" autocomplete="address-line1" required></div>
+        <div class="campo m2 meio"><label for="numero">Número</label><input id="numero" name="numero" required></div>
+        <div class="campo m4"><label for="complemento">Complemento (opcional)</label><input id="complemento" name="complemento" autocomplete="address-line2"></div>
+        <div class="campo m4"><label for="cidade">Cidade</label><input id="cidade" name="cidade" autocomplete="address-level2" required></div>
+        <div class="campo m2 meio"><label for="uf">Estado</label><input id="uf" name="uf" autocomplete="address-level1" maxlength="2" placeholder="RS" pattern="[A-Za-z]{2}" required></div>
+      </div>
+      <div class="erro" id="erro" role="alert" hidden></div>
+      <button class="btn primario" id="pagar" type="submit">Pagar com Mercado Pago</button>
+      <p class="seguro">Você será levado ao Mercado Pago para concluir o pagamento.</p>
+    </form>
+  </div>
+</aside>
+
+<script src="produtos.js"></script>
+<script>
+/* ===== Configuração: troque pelos dados da sua loja ===== */
+const CONFIG = {
+  endpointCheckout: '/api/checkout',
+  endpointProdutos: '/api/produtos',
+  whatsapp: '5554999999999',   // DDI + DDD + número, só dígitos
+  instagram: '3dlabs'
+};
+
+/* ===== Utilidades ===== */
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let PRODUTOS = [];
+let porId = {};
+
+/* ===== Ilustrações das peças de exemplo (feitas de camadas) ===== */
+const FORMAS = {
+  vaso: 'M72 36 H128 L122 62 C150 90 150 130 128 156 L124 172 H76 L72 156 C50 130 50 90 78 62 Z',
+  colmeia: 'M100 30 L150 58 L150 142 L100 170 L50 142 L50 58 Z M100 54 L130 71 L130 129 L100 146 L70 129 L70 71 Z',
+  dobra: 'M40 170 L40 150 L118 58 L158 58 L158 78 L132 78 L78 170 Z',
+  lua: 'M100 36 a64 64 0 1 0 0.01 0 Z',
+  chaveiro: 'M64 52 H136 Q146 52 146 62 V138 Q146 148 136 148 H64 Q54 148 54 138 V62 Q54 52 64 52 Z M100 64 a10 10 0 1 0 0.01 0 Z',
+  faceta: 'M50 56 H150 L130 170 H70 Z',
+  arco: 'M50 170 V92 A50 50 0 0 1 150 92 V170 H124 V94 A24 24 0 0 0 76 94 V170 Z',
+  d20: 'M100 28 L160 64 L160 136 L100 172 L40 136 L40 64 Z'
+};
+const DETALHES = {
+  d20: 'M40 64 H160 M40 136 H160 M100 28 L40 136 M100 28 L160 136 M100 172 L40 64 M100 172 L160 64'
+};
+function arte(forma, cor, uid, nome) {
+  const clip = 'c-' + uid;
+  const detalhe = DETALHES[forma]
+    ? `<path d="${DETALHES[forma]}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5" clip-path="url(#${clip})"/>` : '';
+  const rotulo = nome ? `role="img" aria-label="Ilustração: ${esc(nome)}"` : 'aria-hidden="true"';
+  return `<svg viewBox="0 0 200 200" ${rotulo}>
+    <defs><clipPath id="${clip}"><path d="${FORMAS[forma]}" clip-rule="evenodd"/></clipPath></defs>
+    <ellipse cx="100" cy="174" rx="56" ry="5" fill="#000" opacity=".1"/>
+    <g clip-path="url(#${clip})">
+      <rect width="200" height="200" fill="${cor}"/>
+      <rect width="200" height="200" fill="url(#brilho)"/>
+      <rect width="200" height="200" fill="url(#camadas)"/>
+    </g>${detalhe}
+  </svg>`;
+}
+// Foto enviada pelo painel, ou a ilustração quando o produto é de exemplo
+function visual(p, uid, comNome) {
+  if (p.imagem) return `<img src="${esc(p.imagem)}" alt="${comNome ? esc(p.nome) : ''}" loading="lazy">`;
+  return arte(FORMAS[p.forma] ? p.forma : 'faceta', p.cor || '#12A8BC', uid, comNome ? p.nome : '');
+}
+
+/* ===== Estado da sacola ===== */
+const CHAVE = '3dlabs:sacola';
+function carregar() {
+  try {
+    const guardado = JSON.parse(localStorage.getItem(CHAVE)) || {};
+    const limpo = {};
+    for (const [id, q] of Object.entries(guardado)) if (porId[id] && Number.isInteger(q) && q > 0) limpo[id] = Math.min(q, 20);
+    return limpo;
+  } catch { return {}; }
+}
+function salvar() { try { localStorage.setItem(CHAVE, JSON.stringify(sacola)); } catch {} }
+let sacola = {};
+
+function calcular() {
+  let subtotal = 0, qtd = 0;
+  for (const [id, q] of Object.entries(sacola)) { subtotal += porId[id].preco * q; qtd += q; }
+  const frete = qtd === 0 ? 0 : (subtotal >= LOJA.frete.gratisAcima ? 0 : LOJA.frete.valor);
+  return { subtotal, qtd, frete, total: Math.round((subtotal + frete) * 100) / 100 };
+}
+
+/* ===== Vitrine ===== */
+let filtro = 'Tudo';
+function desenharFiltros() {
+  const cats = ['Tudo', ...new Set(PRODUTOS.map((p) => p.categoria).filter(Boolean))];
+  if (!cats.includes(filtro)) filtro = 'Tudo';
+  $('#filtros').hidden = cats.length < 3;
+  $('#filtros').innerHTML = cats.map((c) =>
+    `<button type="button" data-cat="${esc(c)}" aria-pressed="${c === filtro}">${esc(c)}</button>`).join('');
+}
+function desenharVitrine() {
+  const lista = PRODUTOS.filter((p) => filtro === 'Tudo' || p.categoria === filtro);
+  $('#grade').hidden = lista.length === 0;
+  $('#grade').innerHTML = lista.map((p) => `
+    <article class="peca">
+      <div class="peca-arte${p.imagem ? ' foto' : ''}">${visual(p, p.id, true)}</div>
+      <div class="peca-info">
+        <h3>${esc(p.nome)}</h3>
+        <p class="desc">${esc(p.desc)}</p>
+        ${p.spec ? `<p class="spec">${esc(p.spec)}</p>` : ''}
+        <p class="preco">${brl.format(p.preco)}<small>ou 12x no cartão pelo Mercado Pago</small></p>
+        <button class="btn" type="button" data-add="${esc(p.id)}">Adicionar à sacola</button>
+      </div>
+    </article>`).join('');
+}
+$('#filtros').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-cat]'); if (!b) return;
+  filtro = b.dataset.cat; desenharFiltros(); desenharVitrine();
+});
+$('#grade').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-add]'); if (!b) return;
+  const id = b.dataset.add;
+  sacola[id] = Math.min((sacola[id] || 0) + 1, 20);
+  salvar(); desenharSacola();
+  b.textContent = 'Adicionado'; setTimeout(() => { b.textContent = 'Adicionar à sacola'; }, 1400);
+});
+
+/* ===== Sacola ===== */
+function desenharSacola() {
+  const t = calcular();
+  $('#contador').textContent = t.qtd;
+  const vazia = t.qtd === 0;
+  $('#vazia').hidden = !vazia;
+  $('#totais').hidden = vazia;
+  $('#form').hidden = vazia;
+  $('#itens').innerHTML = Object.entries(sacola).map(([id, q]) => {
+    const p = porId[id];
+    return `<li class="item">
+      <div class="mini">${visual(p, 'm-' + id, false)}</div>
+      <div>
+        <strong>${esc(p.nome)}</strong>
+        <span class="unit">${brl.format(p.preco)} cada</span>
+        <div class="qtd">
+          <button type="button" data-acao="menos" data-id="${esc(id)}" aria-label="Diminuir quantidade de ${esc(p.nome)}">−</button>
+          <output aria-label="Quantidade">${q}</output>
+          <button type="button" data-acao="mais" data-id="${esc(id)}" aria-label="Aumentar quantidade de ${esc(p.nome)}">+</button>
+        </div>
+      </div>
+      <div class="item-dir">${brl.format(p.preco * q)}
+        <button class="remover" type="button" data-acao="remover" data-id="${esc(id)}" aria-label="Remover ${esc(p.nome)}">Remover</button>
+      </div>
+    </li>`;
+  }).join('');
+  $('#totais').innerHTML = `
+    <dt>Produtos</dt><dd>${brl.format(t.subtotal)}</dd>
+    <dt>Frete</dt><dd>${t.frete === 0 ? 'Grátis' : brl.format(t.frete)}</dd>
+    <dt class="total">Total</dt><dd class="total">${brl.format(t.total)}</dd>`;
+}
+$('#itens').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-acao]'); if (!b) return;
+  const id = b.dataset.id;
+  if (b.dataset.acao === 'mais') sacola[id] = Math.min(sacola[id] + 1, 20);
+  if (b.dataset.acao === 'menos') sacola[id] = sacola[id] - 1;
+  if (b.dataset.acao === 'remover' || sacola[id] < 1) delete sacola[id];
+  salvar(); desenharSacola();
+});
+
+const gaveta = $('#sacola'), veu = $('#veu'), abrirBtn = $('#abrirSacola');
+function abrir() {
+  veu.hidden = false; gaveta.inert = false; gaveta.classList.add('aberta');
+  abrirBtn.setAttribute('aria-expanded', 'true'); $('#fecharSacola').focus();
+}
+function fechar() {
+  gaveta.classList.remove('aberta'); gaveta.inert = true; veu.hidden = true;
+  abrirBtn.setAttribute('aria-expanded', 'false'); abrirBtn.focus();
+}
+abrirBtn.addEventListener('click', abrir);
+$('#fecharSacola').addEventListener('click', fechar);
+veu.addEventListener('click', fechar);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && gaveta.classList.contains('aberta')) fechar(); });
+
+/* ===== Entrega: máscara e preenchimento por CEP ===== */
+const cep = $('#cep');
+cep.addEventListener('input', () => {
+  const d = cep.value.replace(/\D/g, '').slice(0, 8);
+  cep.value = d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d;
+});
+cep.addEventListener('blur', async () => {
+  const d = cep.value.replace(/\D/g, '');
+  if (d.length !== 8) return;
+  try {
+    const r = await fetch(`https://viacep.com.br/ws/${d}/json/`);
+    const j = await r.json();
+    if (j.erro) return;
+    if (!$('#endereco').value) $('#endereco').value = j.logradouro || '';
+    if (!$('#cidade').value) $('#cidade').value = j.localidade || '';
+    if (!$('#uf').value) $('#uf').value = j.uf || '';
+    if (j.logradouro) $('#numero').focus();
+  } catch { /* o cliente preenche à mão */ }
+});
+
+/* ===== Pagamento: cria a preferência no servidor e vai para o Mercado Pago ===== */
+$('#form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const erro = $('#erro'), botao = $('#pagar');
+  erro.hidden = true;
+  const f = new FormData(e.target);
+  const cliente = Object.fromEntries(f.entries());
+  const itens = Object.entries(sacola).map(([id, qtd]) => ({ id, qtd }));
+  if (!itens.length) return;
+
+  botao.disabled = true; botao.textContent = 'Abrindo o Mercado Pago…';
+  try {
+    const r = await fetch(CONFIG.endpointCheckout, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itens, cliente })
+    });
+    const dados = await r.json().catch(() => ({}));
+    if (!r.ok || !dados.url) throw new Error(dados.erro || 'falha');
+    window.location.href = dados.url;
+  } catch (err) {
+    erro.textContent = (err.message && err.message !== 'falha' && err.message !== 'Failed to fetch')
+      ? err.message
+      : 'Não foi possível abrir o pagamento agora. Tente de novo em instantes ou chame no WhatsApp.';
+    erro.hidden = false;
+    botao.disabled = false; botao.textContent = 'Pagar com Mercado Pago';
+  }
+});
+
+/* ===== Retorno do Mercado Pago (?pedido=ok | pendente | erro) ===== */
+function retorno() {
+  const status = new URLSearchParams(location.search).get('pedido');
+  if (!status) return;
+  const msgs = {
+    ok: 'Pagamento aprovado. Obrigado! Enviaremos a confirmação e o rastreio por e-mail.',
+    pendente: 'Pagamento pendente. Assim que o Pix ou o boleto for confirmado, começamos a imprimir.',
+    erro: 'O pagamento não foi concluído. Sua sacola continua salva para você tentar de novo.'
+  };
+  if (!msgs[status]) return;
+  if (status === 'ok') { sacola = {}; salvar(); }
+  $('#avisoTexto').textContent = msgs[status];
+  $('#aviso').hidden = false;
+  history.replaceState(null, '', location.pathname);
+}
+$('#avisoFechar').addEventListener('click', () => { $('#aviso').hidden = true; });
+
+/* ===== Catálogo: vem do painel (/api/produtos); sem servidor, usa os exemplos de produtos.js ===== */
+async function carregarCatalogo() {
+  let r;
+  try { r = await fetch(CONFIG.endpointProdutos, { cache: 'no-store' }); }
+  catch { return { produtos: LOJA.produtos, ok: true }; }       // prévia local, sem servidor
+  if (r.status === 404) return { produtos: LOJA.produtos, ok: true };
+  if (!r.ok) return { produtos: [], ok: false };
+  try {
+    const d = await r.json();
+    return { produtos: Array.isArray(d.produtos) ? d.produtos : [], ok: true };
+  } catch { return { produtos: LOJA.produtos, ok: true }; }
+}
+
+async function iniciar() {
+  const cat = await carregarCatalogo();
+  PRODUTOS = cat.produtos;
+  porId = Object.fromEntries(PRODUTOS.map((p) => [p.id, p]));
+  sacola = carregar();
+  retorno();
+  desenharFiltros(); desenharVitrine(); desenharSacola();
+  const msg = $('#vitrineMsg');
+  if (!cat.ok) { msg.textContent = 'Não foi possível carregar os produtos agora. Recarregue a página em instantes.'; msg.hidden = false; }
+  else if (!PRODUTOS.length) { msg.textContent = 'Estamos preparando as primeiras peças. Volte em breve.'; msg.hidden = false; }
+  else msg.hidden = true;
+}
+
+/* ===== Início ===== */
+const zap = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Quero um orçamento de peça sob medida.')}`;
+$('#linkWhats').href = zap; $('#linkWhats2').href = zap;
+$('#linkInsta').href = `https://instagram.com/${CONFIG.instagram}`;
+$('#ano').textContent = new Date().getFullYear();
+$('#heroArte').innerHTML = arte('vaso', '#FF5A1F', 'hero', '');
+iniciar();
+</script>
+</body>
+</html>

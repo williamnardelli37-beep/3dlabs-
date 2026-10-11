@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" role="img" aria-label="3D Labs">
+  <style>@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&amp;display=swap');
+    .marca{font-family:'Bricolage Grotesque','Arial Black',system-ui,sans-serif;font-weight:800;font-size:54px;letter-spacing:-1.5px}</style>
+  <defs>
+    <clipPath id="c"><path d="M36 6 H64 V36 L90 84 Q96 94 86 94 H14 Q4 94 10 84 L36 36 Z"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect y="6"  width="100" height="8" fill="#262B31"/>
+    <rect y="18" width="100" height="8" fill="#262B31"/>
+    <rect y="30" width="100" height="8" fill="#262B31"/>
+    <rect y="42" width="100" height="8" fill="#262B31"/>
+    <rect y="54" width="100" height="8" fill="#FF5A1F"/>
+    <rect y="66" width="100" height="8" fill="#FF5A1F"/>
+    <rect y="78" width="100" height="8" fill="#FF5A1F"/>
+    <rect y="90" width="100" height="8" fill="#FF5A1F"/>
+  </g>
+  <text class="marca" x="112" y="68" fill="#262B31"><tspan fill="#D9430C">3D</tspan> Labs</text>
+</svg>
